@@ -23,6 +23,7 @@ namespace Topic_Mapper_2._0
         public MainWindow()
         {
             InitializeComponent();
+            Console.WriteLine("Hello World");
         }
     }
 }
