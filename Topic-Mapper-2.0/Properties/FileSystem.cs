@@ -6,8 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Topic_Mapper_2._0.Navigation_Files;
+using Topic_Mapper_2._0.DB;
 
-namespace Topic_Mapper_2._0.Properties
+namespace Topic_Mapper_2._0.FS
 {
     class FileSystem
     {
@@ -42,6 +43,7 @@ namespace Topic_Mapper_2._0.Properties
 
                         //Create a file object to add to stack.
                         Files file = new Files(filename, dir, Path.GetExtension(f), File.GetCreationTime(f).ToString());
+
                         fileStack.Push(file);
                     }
                     traverseFileSystem(dir);

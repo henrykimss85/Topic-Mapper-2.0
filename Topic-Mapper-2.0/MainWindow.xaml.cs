@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Topic_Mapper_2._0.FS;
+using Topic_Mapper_2._0.DB;
 
 namespace Topic_Mapper_2._0
 {
@@ -23,7 +26,12 @@ namespace Topic_Mapper_2._0
         public MainWindow()
         {
             InitializeComponent();
-            Console.WriteLine("Hello World");
+            Database db = new Database("localhost", "3306", "mydb", "root", "drpepper85");
+            FileSystem fs = new FileSystem(Directory.GetCurrentDirectory());
+            if (db.testConnection())
+            {
+                Console.WriteLine("CONNECTED");
+            }
         }
     }
 }
