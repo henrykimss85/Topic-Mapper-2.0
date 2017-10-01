@@ -14,6 +14,8 @@ namespace Topic_Mapper_2._0.DB
         private string database;
         private string username;
         private string password;
+        private string connection;
+
 
         //Takes in MySql Database Information
         public Database(string datasource, string port, string database, string username, string password)
@@ -23,6 +25,25 @@ namespace Topic_Mapper_2._0.DB
             this.database = database;
             this.username = username;
             this.password = password;
+            connectionString();
+        }
+        public void connectionString()
+        {
+            this.connection = String.Format("datasource={0};port={1};database={2};username={3};password={4}", datasource, port, database, username, password);
+        }
+
+        public string checkNull(string str)
+        {
+            if (str == null)
+            {
+                Console.WriteLine("NULL VALUE");
+                return "null";
+            }
+            else
+            {
+                str = String.Format("'{0}'", str);
+                return str;
+            }
         }
 
         //Test the connection of the database
@@ -75,53 +96,19 @@ namespace Topic_Mapper_2._0.DB
         //Insert file information into the database
         public void InsertNewFile(string fileName, string filePath, string date_origin, string type, string summary)
         {
-            string MyConnection2 = String.Format("datasource={0};port={1};database={2};username={3};password={4}", datasource, port, database, username, password);
+            
+            //Check for null values
+            fileName = checkNull(fileName);
+            filePath = checkNull(filePath);
+            date_origin = checkNull(date_origin);
+            type = checkNull(type);
+            summary = checkNull(summary);
 
-                if (fileName == null)
-                {
-                    fileName = "null";
-                }
-                else
-                {
-                    fileName = String.Format("'{0}'", fileName);
-                }
-                if (filePath == null)
-                {
-                    filePath = "null";
-                }
-                else
-                {
-                    filePath = String.Format("'{0}'", filePath);
-                }
-                if (date_origin == null)
-                {
-                    date_origin = "null";
-                }
-                else
-                {
-                    date_origin = String.Format("'{0}'", date_origin);
-                }
-                if (type == null)
-                {
-                    type = "null";
-                }
-                else
-                {
-                    type = String.Format("'{0}'", type);
-                }
-                if (summary == null)
-                {
-                    summary = "null";
-                }
-                else
-                {
-                    summary = String.Format("'{0}'", summary);
-                }
+            string MyConnection2 = connection;
 
-         
             //Console.WriteLine(MyConnection2);
             string Query = String.Format("insert into files (fileName, filePath, date_origin, type, summary) VALUES ( {0}, {1}, {2}, {3}, {4});", fileName, filePath, date_origin, type, summary);
-            Console.WriteLine(Query);
+           
             //This is MySqlConnection here i have created the object and pass my connection string. 
             MySqlConnection MyConn2 = new MySqlConnection(MyConnection2);
 
@@ -136,6 +123,127 @@ namespace Topic_Mapper_2._0.DB
             MyConn2.Close();
         }
 
+        public void changeFileName(int fileID, string fileName)
+        {
 
+            //Determine fileName is null
+            fileName = checkNull(fileName);
+
+            //Create UPDATE string
+            string update = string.Format("UPDATE files SET fileName = {0} where idfiles = {1}", fileName,  fileID);
+
+            string MyConnection = connection;
+           
+            MySqlConnection MyConn = new MySqlConnection(MyConnection);
+
+            MySqlCommand MyCommand = new MySqlCommand(update, MyConn);
+
+            MySqlDataReader MyReader;
+
+            try
+            {
+                MyConn.Open();
+
+                //Execute UPDATE
+                MyReader = MyCommand.ExecuteReader();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("ERROR:" + ex.ToString());
+            }
+            MyConn.Close();
+
+        }
+
+        public void changeDate_origin(int fileID, string date_origin)
+        {
+            //Determine date_origin is null
+            date_origin = checkNull(date_origin);
+
+            //Create UPDATE string
+            string update = string.Format("UPDATE files SET date_origin = {0} where idfiles = {1}", date_origin, fileID);
+
+            string MyConnection = connection;
+
+            MySqlConnection MyConn = new MySqlConnection(MyConnection);
+
+            MySqlCommand MyCommand = new MySqlCommand(update, MyConn);
+
+            MySqlDataReader MyReader;
+
+            try
+            {
+                MyConn.Open();
+
+                //Execute UPDATE
+                MyReader = MyCommand.ExecuteReader();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("ERROR:" + ex.ToString());
+            }
+            MyConn.Close();
+        }
+        
+        public void changeSummary(int fileID, string summary)
+        {
+            //Determine summary is null
+            summary = checkNull(summary);
+
+            //Create UPDATE string
+            string update = string.Format("UPDATE files SET summary = {0} where idfiles = {1}", summary, fileID);
+
+            string MyConnection = connection;
+
+            MySqlConnection MyConn = new MySqlConnection(MyConnection);
+
+            MySqlCommand MyCommand = new MySqlCommand(update, MyConn);
+
+            MySqlDataReader MyReader;
+
+            try
+            {
+                MyConn.Open();
+
+                //Execute UPDATE
+                MyReader = MyCommand.ExecuteReader();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("ERROR:" + ex.ToString());
+            }
+            MyConn.Close();
+        }
+
+        public void changeDate_accessed(int fileID, string date_accessed)
+        {
+            //Determine date_accessed is null
+            date_accessed = checkNull(date_accessed);
+
+            //Create UPDATE string
+            string update = string.Format("UPDATE files SET date_accessed = {0} where idfiles = {1}", date_accessed, fileID);
+
+            string MyConnection = connection;
+
+            MySqlConnection MyConn = new MySqlConnection(MyConnection);
+
+            MySqlCommand MyCommand = new MySqlCommand(update, MyConn);
+
+            MySqlDataReader MyReader;
+
+            try
+            {
+                MyConn.Open();
+
+                //Execute UPDATE
+                MyReader = MyCommand.ExecuteReader();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("ERROR:" + ex.ToString());
+            }
+            MyConn.Close();
+        }
+    
     }
 }
