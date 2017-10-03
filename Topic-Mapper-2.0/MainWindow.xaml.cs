@@ -29,16 +29,8 @@ namespace Topic_Mapper_2._0
             
             Database db = new Database("localhost", "3306", "mydb", "root", "drpepper85");
             FileSystem fs = new FileSystem(Directory.GetCurrentDirectory());
-            fs.listFileSystem();
-            fs.printStack();
-            db.changeFileName(15, null);
-           
-            
-            if (db.testConnection())
-            {
-                Console.WriteLine("CONNECTED");
-            }
-            
+            //db.InsertNewFile("Test", null, null, null, null);
+            db.addKeyword(2, "Spain", 0);
         }
     }
 }

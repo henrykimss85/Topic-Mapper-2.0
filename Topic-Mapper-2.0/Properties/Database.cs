@@ -27,25 +27,11 @@ namespace Topic_Mapper_2._0.DB
             this.password = password;
             connectionString();
         }
+
         public void connectionString()
         {
             this.connection = String.Format("datasource={0};port={1};database={2};username={3};password={4}", datasource, port, database, username, password);
         }
-
-        public string checkNull(string str)
-        {
-            if (str == null)
-            {
-                Console.WriteLine("NULL VALUE");
-                return "null";
-            }
-            else
-            {
-                str = String.Format("'{0}'", str);
-                return str;
-            }
-        }
-
         //Test the connection of the database
         public bool testConnection()
         {
@@ -84,13 +70,27 @@ namespace Topic_Mapper_2._0.DB
             {
                 MyConn2.Open();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine("ERROR:" + ex.ToString());
                 return false;
             }
             MyConn2.Close();
             return true;
+        }
+
+        public string checkNull(string str)
+        {
+            if (str == null)
+            {
+                Console.WriteLine("NULL VALUE");
+                return "null";
+            }
+            else
+            {
+                str = String.Format("'{0}'", str);
+                return str;
+            }
         }
 
         //Insert file information into the database
@@ -113,13 +113,14 @@ namespace Topic_Mapper_2._0.DB
             MySqlConnection MyConn2 = new MySqlConnection(MyConnection2);
 
             MySqlCommand MyCommand2 = new MySqlCommand(Query, MyConn2);
-
+          
             MySqlDataReader MyReader2;
 
             MyConn2.Open();
 
             MyReader2 = MyCommand2.ExecuteReader();
-
+            
+           // Console.WriteLine("MyReader: " +  MyCommand2.LastInsertedId);
             MyConn2.Close();
         }
 
@@ -243,6 +244,116 @@ namespace Topic_Mapper_2._0.DB
                 Console.WriteLine("ERROR:" + ex.ToString());
             }
             MyConn.Close();
+        }
+
+        public void addKeyword(int fileID, string keyword, int type)
+        {
+
+        /* Check Duplicate 
+         * if yes 
+         *  find keywordID
+         *  else
+         *      insert
+         *      
+         *      match 
+         */
+
+            keyword = checkNull(keyword);
+            int keywordID = 0;
+            //Statement to check if it exist
+            string Query = String.Format("SELECT COUNT(keyword) from keywords where keyword = {0}", keyword);
+            string MyConnection = connection;
+
+            //This is MySqlConnection here i have created the object and pass my connection string. 
+            MySqlConnection MyConn = new MySqlConnection(MyConnection);
+            MySqlCommand MyCommand = new MySqlCommand(Query, MyConn);
+            MySqlDataReader MyReader;
+
+            //Execute keyword count statement to look if it exist
+            MyConn.Open();
+            MyReader = MyCommand.ExecuteReader();
+            MyConn.Close();
+
+            //If keyword does exist
+            MyConn.Open();
+            if (int.Parse(MyCommand.ExecuteScalar().ToString()) == 1)
+            {
+                //Find keywordID 
+                MyConn.Close();
+                Query = String.Format("SELECT idkeywords from keywords where keyword = {0}", keyword);
+                MyCommand = new MySqlCommand(Query, MyConn);
+               
+
+                MyConn.Open();
+                MyReader = MyCommand.ExecuteReader();
+                MyConn.Close();
+
+                MyConn.Open();
+                keywordID = int.Parse(MyCommand.ExecuteScalar().ToString());
+                MyConn.Close();
+
+            }
+            else
+            {
+                MyConn.Close();
+
+                Query = String.Format("insert into keywords (keyword, type) VALUES ({0}, {1})", keyword, type);
+                MyCommand = new MySqlCommand(Query, MyConn);
+
+
+                MyConn.Open();
+                MyReader = MyCommand.ExecuteReader();
+                MyConn.Close();
+
+                // Add connection with Keyword and File
+                MyConn.Open();
+                keywordID = (int)MyCommand.LastInsertedId;
+                Console.WriteLine("KeywordID: " + keywordID);
+                MyConn.Close();
+            }
+
+
+            MyConn.Open();
+
+            Query = String.Format("insert into files_has_keywords (fileID, keywordID) VALUES ('{0}', '{1}')", fileID, keywordID);
+
+            MySqlCommand MyCommand2 = new MySqlCommand(Query, MyConn);
+            MyReader = MyCommand2.ExecuteReader();
+
+            MyConn.Close();
+        }
+
+        public void deleteKeyword(int fileID, int keywordID)
+        {
+            //DELETE FROM files_has_keywords where (fileID = 1 AND keywordID = 4);
+            string delete = String.Format("DELETE FROM files_has_keywords where (fileID = '{0}' AND keywordID = '{1}')", fileID, keywordID);
+
+            string MyConnection = connection;
+
+            //This is MySqlConnection here i have created the object and pass my connection string. 
+            MySqlConnection MyConn = new MySqlConnection(MyConnection);
+
+            MySqlCommand MyCommand = new MySqlCommand(delete, MyConn);
+
+            MySqlDataReader MyReader;
+
+            MyConn.Open();
+
+            MyReader = MyCommand.ExecuteReader();
+
+            MyConn.Close();
+        }
+
+        //Retrieve all keywords related to the file
+        public void retrieveKeywords(int fileID)
+        {
+
+        }
+
+        //Retrieve all files & keywords related to keyword
+        public void retrieveFiles(int kewordID)
+        {
+
         }
     
     }
