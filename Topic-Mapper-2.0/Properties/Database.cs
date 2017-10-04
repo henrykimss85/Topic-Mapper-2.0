@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
+using Topic_Mapper_2._0.keywords;
+using System.Collections;
 
 namespace Topic_Mapper_2._0.DB
 {
@@ -32,6 +34,7 @@ namespace Topic_Mapper_2._0.DB
         {
             this.connection = String.Format("datasource={0};port={1};database={2};username={3};password={4}", datasource, port, database, username, password);
         }
+
         //Test the connection of the database
         public bool testConnection()
         {
@@ -246,17 +249,8 @@ namespace Topic_Mapper_2._0.DB
             MyConn.Close();
         }
 
-        public void addKeyword(int fileID, string keyword, int type)
+        public void addKeyword(int fileID, string keyword, int category)
         {
-
-        /* Check Duplicate 
-         * if yes 
-         *  find keywordID
-         *  else
-         *      insert
-         *      
-         *      match 
-         */
 
             keyword = checkNull(keyword);
             int keywordID = 0;
@@ -297,7 +291,7 @@ namespace Topic_Mapper_2._0.DB
             {
                 MyConn.Close();
 
-                Query = String.Format("insert into keywords (keyword, type) VALUES ({0}, {1})", keyword, type);
+                Query = String.Format("insert into keywords (keyword, category) VALUES ({0}, {1})", keyword, category);
                 MyCommand = new MySqlCommand(Query, MyConn);
 
 
@@ -345,9 +339,30 @@ namespace Topic_Mapper_2._0.DB
         }
 
         //Retrieve all keywords related to the file
-        public void retrieveKeywords(int fileID)
+        public Stack retrieveKeywords(int fileID)
         {
+            Stack keywords = new Stack();
+            Keywords k = new Keywords();
+            String Query = String.Format("SELECT idkeywords, keyword, category from files, files_has_keywords, keywords where (fileID = {0} AND idfiles = {1} AND keywordID = idkeywords)", fileID, fileID);
+            string MyConnection = connection;
+            MySqlConnection MyConn = new MySqlConnection(MyConnection);
+            MySqlCommand MyCommand = new MySqlCommand(Query, MyConn);
+            MySqlDataReader MyReader;
 
+            MyConn.Open();
+            MyReader = MyCommand.ExecuteReader();
+
+            while (MyReader.Read())
+            {
+                k.setID((int)MyReader["idkeywords"]);
+                k.setKeyword((string)MyReader["keyword"]);
+                k.setCategory((int)MyReader["category"]);
+                keywords.Push(k);
+            }
+          
+            MyConn.Close();
+            return keywords;
+            
         }
 
         //Retrieve all files & keywords related to keyword

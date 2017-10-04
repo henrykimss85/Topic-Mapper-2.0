@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Topic_Mapper_2._0.FS;
 using Topic_Mapper_2._0.DB;
+using Topic_Mapper_2._0.keywords;
 
 namespace Topic_Mapper_2._0
 {
@@ -29,8 +31,8 @@ namespace Topic_Mapper_2._0
             
             Database db = new Database("localhost", "3306", "mydb", "root", "drpepper85");
             FileSystem fs = new FileSystem(Directory.GetCurrentDirectory());
-            //db.InsertNewFile("Test", null, null, null, null);
-            db.addKeyword(2, "Spain", 0);
+            Stack keywords = new Stack();
+           keywords = db.retrieveKeywords(2);
         }
     }
 }
