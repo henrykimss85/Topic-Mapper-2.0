@@ -17,6 +17,7 @@ namespace Topic_Mapper_2._0.keywords
         {
 
         }
+
         public Keywords(int ID, string keyword, int category)
         {
             this.ID = ID;

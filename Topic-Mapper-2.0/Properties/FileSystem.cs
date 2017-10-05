@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Topic_Mapper_2._0.Navigation_Files;
+using Topic_Mapper_2._0.files;
 using Topic_Mapper_2._0.DB;
 
 namespace Topic_Mapper_2._0.FS
@@ -23,11 +23,13 @@ namespace Topic_Mapper_2._0.FS
             //take in directory location and assign it to rootDirectory
             rootDirectory = directory;
         }
+
         public void listFileSystem()
         {
             //this is a wrapper for passing the root directory to traverseFIleSystem for first ru
             this.traverseFileSystem(rootDirectory);
         }
+
         public void traverseFileSystem(string localDirectory)
         {
             //traverse file system starting in root directory
@@ -55,6 +57,7 @@ namespace Topic_Mapper_2._0.FS
             }
 
         }
+
         public void printStack()
         {
             foreach (Files item in fileStack)

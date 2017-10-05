@@ -18,6 +18,7 @@ using Topic_Mapper_2._0.FS;
 using Topic_Mapper_2._0.DB;
 using Topic_Mapper_2._0.keywords;
 using Topic_Mapper_2._0.files;
+// MAKE SURE TO MYSQL.DATA IS IN REFERENCE 
 
 namespace Topic_Mapper_2._0
 {
@@ -29,9 +30,11 @@ namespace Topic_Mapper_2._0
         public MainWindow()
         {
             InitializeComponent();
-            
-            Database db = new Database("localhost", "3306", "mydb", "root", "drpepper85");
+            //Enter MySql Database Information 
+            Database db = new Database("Data Source", "Port", "Database", "Username", "Password");
             FileSystem fs = new FileSystem(Directory.GetCurrentDirectory());
+
+            //Testing 
             Stack keywords = new Stack();
             Stack Files = new Stack();
             keywords = db.retrieveKeywords(2);

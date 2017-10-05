@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MySql.Data.MySqlClient;
+using MySql.Data.MySqlClient; // MAKE SURE TO MYSQL.DATA IS IN REFERENCE 
 using Topic_Mapper_2._0.keywords;
 using Topic_Mapper_2._0.files;
 
@@ -32,6 +32,7 @@ namespace Topic_Mapper_2._0.DB
             connectionString();
         }
 
+        //Form connection information 
         public void connectionString()
         {
             this.connection = String.Format("datasource={0};port={1};database={2};username={3};password={4}", datasource, port, database, username, password);
@@ -84,6 +85,7 @@ namespace Topic_Mapper_2._0.DB
             return true;
         }
 
+        //Check if the string is null 
         public string checkNull(string str)
         {
             if (str == null)
@@ -114,21 +116,15 @@ namespace Topic_Mapper_2._0.DB
             //Console.WriteLine(MyConnection2);
             string Query = String.Format("insert into files (fileName, filePath, date_origin, type, summary) VALUES ( {0}, {1}, {2}, {3}, {4});", fileName, filePath, date_origin, type, summary);
            
-            //This is MySqlConnection here i have created the object and pass my connection string. 
             MySqlConnection MyConn2 = new MySqlConnection(MyConnection2);
-
-            MySqlCommand MyCommand2 = new MySqlCommand(Query, MyConn2);
-          
+            MySqlCommand MyCommand2 = new MySqlCommand(Query, MyConn2);          
             MySqlDataReader MyReader2;
 
             MyConn2.Open();
-
             MyReader2 = MyCommand2.ExecuteReader();
-            
-           // Console.WriteLine("MyReader: " +  MyCommand2.LastInsertedId);
             MyConn2.Close();
         }
-
+        //Change FileName
         public void changeFileName(int fileID, string fileName)
         {
 
@@ -138,12 +134,9 @@ namespace Topic_Mapper_2._0.DB
             //Create UPDATE string
             string update = string.Format("UPDATE files SET fileName = {0} where idfiles = {1}", fileName,  fileID);
 
-            string MyConnection = connection;
-           
+            string MyConnection = connection;          
             MySqlConnection MyConn = new MySqlConnection(MyConnection);
-
             MySqlCommand MyCommand = new MySqlCommand(update, MyConn);
-
             MySqlDataReader MyReader;
 
             try
@@ -161,6 +154,7 @@ namespace Topic_Mapper_2._0.DB
 
         }
 
+        //Change Date_origin
         public void changeDate_origin(int fileID, string date_origin)
         {
             //Determine date_origin is null
@@ -170,11 +164,8 @@ namespace Topic_Mapper_2._0.DB
             string update = string.Format("UPDATE files SET date_origin = {0} where idfiles = {1}", date_origin, fileID);
 
             string MyConnection = connection;
-
             MySqlConnection MyConn = new MySqlConnection(MyConnection);
-
             MySqlCommand MyCommand = new MySqlCommand(update, MyConn);
-
             MySqlDataReader MyReader;
 
             try
@@ -191,6 +182,7 @@ namespace Topic_Mapper_2._0.DB
             MyConn.Close();
         }
         
+        //Change Summary
         public void changeSummary(int fileID, string summary)
         {
             //Determine summary is null
@@ -200,11 +192,8 @@ namespace Topic_Mapper_2._0.DB
             string update = string.Format("UPDATE files SET summary = {0} where idfiles = {1}", summary, fileID);
 
             string MyConnection = connection;
-
             MySqlConnection MyConn = new MySqlConnection(MyConnection);
-
             MySqlCommand MyCommand = new MySqlCommand(update, MyConn);
-
             MySqlDataReader MyReader;
 
             try
@@ -221,6 +210,7 @@ namespace Topic_Mapper_2._0.DB
             MyConn.Close();
         }
 
+        //Change Date_accessed
         public void changeDate_accessed(int fileID, string date_accessed)
         {
             //Determine date_accessed is null
@@ -230,11 +220,8 @@ namespace Topic_Mapper_2._0.DB
             string update = string.Format("UPDATE files SET date_accessed = {0} where idfiles = {1}", date_accessed, fileID);
 
             string MyConnection = connection;
-
             MySqlConnection MyConn = new MySqlConnection(MyConnection);
-
             MySqlCommand MyCommand = new MySqlCommand(update, MyConn);
-
             MySqlDataReader MyReader;
 
             try
@@ -249,8 +236,10 @@ namespace Topic_Mapper_2._0.DB
                 Console.WriteLine("ERROR:" + ex.ToString());
             }
             MyConn.Close();
+
         }
 
+        //Add Keyword to files and also check if the keyword exist or not
         public void addKeyword(int fileID, string keyword, int category)
         {
 
@@ -258,9 +247,7 @@ namespace Topic_Mapper_2._0.DB
             int keywordID = 0;
             //Statement to check if it exist
             string Query = String.Format("SELECT COUNT(keyword) from keywords where keyword = {0}", keyword);
-            string MyConnection = connection;
-
-            //This is MySqlConnection here i have created the object and pass my connection string. 
+            string MyConnection = connection;            
             MySqlConnection MyConn = new MySqlConnection(MyConnection);
             MySqlCommand MyCommand = new MySqlCommand(Query, MyConn);
             MySqlDataReader MyReader;
@@ -270,7 +257,7 @@ namespace Topic_Mapper_2._0.DB
             MyReader = MyCommand.ExecuteReader();
             MyConn.Close();
 
-            //If keyword does exist
+            //Check if keyword does exist
             MyConn.Open();
             if (int.Parse(MyCommand.ExecuteScalar().ToString()) == 1)
             {
@@ -289,6 +276,7 @@ namespace Topic_Mapper_2._0.DB
                 MyConn.Close();
 
             }
+            //If can't find the keyword then insert new keyword
             else
             {
                 MyConn.Close();
@@ -308,35 +296,27 @@ namespace Topic_Mapper_2._0.DB
                 MyConn.Close();
             }
 
-
-            MyConn.Open();
-
+            //Insert connection between Keyword and File 
             Query = String.Format("insert into files_has_keywords (fileID, keywordID) VALUES ('{0}', '{1}')", fileID, keywordID);
 
+            MyConn.Open();
             MySqlCommand MyCommand2 = new MySqlCommand(Query, MyConn);
             MyReader = MyCommand2.ExecuteReader();
-
             MyConn.Close();
         }
 
+        //Delete Keyword attached to the File
         public void deleteKeyword(int fileID, int keywordID)
         {
-            //DELETE FROM files_has_keywords where (fileID = 1 AND keywordID = 4);
             string delete = String.Format("DELETE FROM files_has_keywords where (fileID = '{0}' AND keywordID = '{1}')", fileID, keywordID);
-
+ 
             string MyConnection = connection;
-
-            //This is MySqlConnection here i have created the object and pass my connection string. 
             MySqlConnection MyConn = new MySqlConnection(MyConnection);
-
             MySqlCommand MyCommand = new MySqlCommand(delete, MyConn);
-
             MySqlDataReader MyReader;
 
             MyConn.Open();
-
             MyReader = MyCommand.ExecuteReader();
-
             MyConn.Close();
         }
 
@@ -367,7 +347,7 @@ namespace Topic_Mapper_2._0.DB
             
         }
 
-        //Retrieve all files & keywords related to keyword
+        //Retrieve all files & keywords related to keyword and return a Stack 
         public Stack retrieveFiles(int keywordID)
         {
             //SELECT fileID, fileName, filePath, type, date_origin, summary from files, files_has_keywords, keywords where (fileID = idfiles AND keywordID = 9 AND idkeywords = 9)

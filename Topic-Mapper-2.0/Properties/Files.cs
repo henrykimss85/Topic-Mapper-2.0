@@ -20,6 +20,7 @@ namespace Topic_Mapper_2._0.files
         {
             //do nothing
         }
+
         public Files(string fName, string fPath, string fType, string cDate)
         {
             this.fileName = fName;
@@ -66,6 +67,7 @@ namespace Topic_Mapper_2._0.files
         {
             return this.fileType;
         }
+
         public void setCreationDate(string creationDate)
         {
             this.creationDate = creationDate;
