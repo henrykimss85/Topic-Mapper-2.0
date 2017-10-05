@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 using Topic_Mapper_2._0.keywords;
-using System.Collections;
+using Topic_Mapper_2._0.files;
+
 
 namespace Topic_Mapper_2._0.DB
 {
@@ -366,10 +368,34 @@ namespace Topic_Mapper_2._0.DB
         }
 
         //Retrieve all files & keywords related to keyword
-        public void retrieveFiles(int kewordID)
+        public Stack retrieveFiles(int keywordID)
         {
+            //SELECT fileID, fileName, filePath, type, date_origin, summary from files, files_has_keywords, keywords where (fileID = idfiles AND keywordID = 9 AND idkeywords = 9)
+            Stack Files = new Stack();
+            Files F = new Files();
+            String Query = String.Format("SELECT fileID, fileName, filePath, type, date_origin, summary from files, files_has_keywords, keywords where (fileID = idfiles AND keywordID = {0} AND idkeywords = {1})", keywordID, keywordID);
+            string MyConnection = connection;
+            MySqlConnection MyConn = new MySqlConnection(MyConnection);
+            MySqlCommand MyCommand = new MySqlCommand(Query, MyConn);
+            MySqlDataReader MyReader;
 
+            MyConn.Open();
+            MyReader = MyCommand.ExecuteReader();
+
+            while (MyReader.Read())
+            {
+                F.setFileID((int)MyReader["fileID"]);
+                F.setFileName((string)MyReader["fileName"]);
+                F.setFilePath((string)MyReader["filePath"]);
+                F.setFileType((string)MyReader["type"]);
+                F.setCreationDate((string)MyReader["date_origin"]);
+                F.setSummary((string)MyReader["summary"]);
+                Files.Push(F);
+            }
+
+            MyConn.Close();
+            return Files;
         }
-    
+
     }
 }

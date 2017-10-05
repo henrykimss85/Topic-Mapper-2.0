@@ -17,6 +17,7 @@ using System.Windows.Shapes;
 using Topic_Mapper_2._0.FS;
 using Topic_Mapper_2._0.DB;
 using Topic_Mapper_2._0.keywords;
+using Topic_Mapper_2._0.files;
 
 namespace Topic_Mapper_2._0
 {
@@ -32,7 +33,10 @@ namespace Topic_Mapper_2._0
             Database db = new Database("localhost", "3306", "mydb", "root", "drpepper85");
             FileSystem fs = new FileSystem(Directory.GetCurrentDirectory());
             Stack keywords = new Stack();
-           keywords = db.retrieveKeywords(2);
+            Stack Files = new Stack();
+            keywords = db.retrieveKeywords(2);
+            Files = db.retrieveFiles(4);
+
         }
     }
 }
